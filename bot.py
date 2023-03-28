@@ -1,4 +1,32 @@
 import discord
+import dotenv
+import logging
+from logging.handlers import RotatingFileHandler
+
+dotenv.load_dotenv()
+
+# create logger
+def init_logging(logger):
+    # logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
+    log_formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')
+
+    handler_rot_file = RotatingFileHandler(filename='discord-bot.log', encoding='utf-8', mode='a')
+    handler_rot_file.setLevel(logging.DEBUG)
+    handler_rot_file.setFormatter(log_formatter)
+
+    handler_console = logging.StreamHandler()
+    handler_console.setLevel(logging.DEBUG)
+    handler_console.setFormatter(log_formatter)
+
+    logger.addHandler(handler_rot_file)
+    logger.addHandler(handler_console)
+
+    return logger
+
+
+logger = init_logging(logging.root)
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -8,6 +36,8 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+        
+        logging.info(f'Message from {message.author.name}: {message.content}')
 
         if message.content == 'ping':
             await message.channel.send('pong')
@@ -15,4 +45,4 @@ class MyClient(discord.Client):
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
-client.run('MTA5MDEwNTM1MzQzNTM2OTU4NA.G-RT94.Z8CnV1OMh1JppqCUt036kiZURLsGyUC1kMj7jg')
+client.run('DISCORD_BOT_TOKEN')
