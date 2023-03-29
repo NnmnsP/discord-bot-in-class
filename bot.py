@@ -18,6 +18,9 @@ def classify_intent(prompt):
               f"1. cheap\n2. expensive\n\n"
               f"User Input: {prompt}\nCategory:")
 
+    logging.info("Prompt: ")
+    logging.info(prompt)
+
     # send prompt to OpenAI's API for classification
     response = openai.Completion.create(
         engine=model_engine,
@@ -27,6 +30,9 @@ def classify_intent(prompt):
         stop=None,
         temperature=0.5,
     )
+
+    logging.info("Answer: ")
+    logging.info(response)
 
     # retrieve the predicted intent code from the response
     predicted_intent = response.choices[0].text.strip().lower()
